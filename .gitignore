@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/PitchAnalyst/.vs/PitchAnalyst/v16
+/PitchAnalyst/PitchAnalyst/bin
+/PitchAnalyst/PitchAnalyst/node_modules/.bin
+/PitchAnalyst/PitchAnalyst/obj/Debug
+/PitchAnalyst/PitchAnalyst/node_modules
