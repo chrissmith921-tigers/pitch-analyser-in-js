@@ -1,10 +1,15 @@
+'use strict';
 const express = require('express');
 var bodyParser = require('body-parser')
 const app = express();
 const port = 3000;
 
+app.use(bodyParser.json({
+    extended: true
+}));
+
 // Sample pitch data - same data i used in the c# exercise
-var pitchList = [
+const pitchList = [
     ["CT",
     -9.65876259589309,
     -7.84717116937003
@@ -3001,10 +3006,6 @@ var pitchList = [
 ]
 ];
 
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-
 
 app.get('/api/pitches', (req, res) => {
     res.json(pitchList);
@@ -3034,8 +3035,7 @@ app.get('/api/percentage-strikes-by-pitchtype', (req, res) => {
 
 app.post('/api/percentage-strikes-by-pitchtype/:pitchType', (req, res) => {
     const pitchType = req.params.pitchType;
-    pitchList = transformData(req.body);
-    const strikes = percentageStrikesByPitchtype(pitchType);
+    const strikes = percentageStrikesByPitchtypeWithList(pitchType, transformData(req.body));
     res.json(strikes);
 });
 
@@ -3079,14 +3079,35 @@ const filterStrikesByPitchType = (_pitchType) => {
     });
     return filteredPitches;
 };
+const filterStrikesByPitchTypeWithList = (_pitchType, _pitchList) => {
+    let filteredPitches = Object.values(_pitchList).filter(pitch => {
+        return (!-8.5 || pitch[1] > -8.5) &&
+            (!8.5 || pitch[1] < 8.5) &&
+            (!-12 || pitch[2] > -12) &&
+            (!12 || pitch[2] < 12) &&
+            (pitch[0] === _pitchType);
+    });
+    return filteredPitches;
+};
 
 const percentageStrikesByPitchtype = (_pitchType) => {
-
+    console.log(pitchList);
     let filteredPitches = Object.values(pitchList).filter(pitch => {
         return (pitch[0] === _pitchType);
     }).length;
 
-    let filteredStrikes = filterStrikesByPitchType(_pitchType, pitchList).length;
+    let filteredStrikes = filterStrikesByPitchType(_pitchType).length;
+    const percentage = (filteredPitches > 0) ? (filteredStrikes / filteredPitches) * 100 : 0;
+
+    return "Percentage strikes for type " + _pitchType + " is " + percentage.toFixed(4) + "%";
+};
+
+const percentageStrikesByPitchtypeWithList = (_pitchType, _pitchList) => {
+    let filteredPitches = Object.values(_pitchList).filter(pitch => {
+        return (pitch[0] === _pitchType);
+    }).length;
+
+    let filteredStrikes = filterStrikesByPitchTypeWithList(_pitchType, _pitchList).length;
     const percentage = (filteredPitches > 0) ? (filteredStrikes / filteredPitches) * 100 : 0;
 
     return "Percentage strikes for type " + _pitchType + " is " + percentage.toFixed(4) + "%";

@@ -12,3 +12,5 @@ GET: http://localhost:3000/api/strike-list-by-pitchtype?pitchType=XX - Gets the 
 GET: http://localhost:3000/api/percentage-list-by-pitchtype?pitchType=XX - Gets the strike percentage based on the given pitchType (Accepted: FB, CT, SL, CB)
 
 POST: http://localhost:3000/api/percentage-strikes-by-pitchtype/XX - Accepts a payload of type [[string, double, double],...] and returns the % strikes for the given pitchtype (replace XX in the uri)
+
+Also attached is REST-project-soapui.xml which allows you to test the POST request above.
